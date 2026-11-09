@@ -1,0 +1,49 @@
+<!doctype html>
+<html lang="ar">
+<head>
+<meta charset="utf-8">
+<title>Content Kitchen cover</title>
+<style>
+@font-face{font-family:"Naskh";src:url("fonts/noto-naskh-arabic-arabic-700-normal.woff2") format("woff2");font-weight:700;unicode-range:U+0600-06FF,U+0750-077F,U+FB50-FDFF,U+FE70-FEFF,U+200C-200E}
+@font-face{font-family:"Naskh";src:url("fonts/noto-naskh-arabic-latin-700-normal.woff2") format("woff2");font-weight:700;unicode-range:U+0000-00FF,U+2000-206F}
+html,body{margin:0;padding:0}
+#root{position:relative;overflow:hidden;font-family:"Naskh",serif;font-weight:700;color:var(--text);
+  background:radial-gradient(120% 80% at 50% 30%,color-mix(in srgb,var(--bg) 82%,var(--accent)) 0%,var(--bg) 70%)}
+#bgimg{position:absolute;inset:0;background-size:cover;background-position:center}
+#bgimg::after{content:"";position:absolute;inset:0;background:linear-gradient(to bottom,color-mix(in srgb,var(--bg) 55%,transparent) 0%,transparent 40%,color-mix(in srgb,var(--bg) 70%,transparent) 100%)}
+#badge{position:absolute;top:300px;left:0;right:0;text-align:center}
+#badge span{display:inline-block;padding:14px 42px;border-radius:999px;background:var(--accent);color:var(--bg);font-size:46px}
+#title{position:absolute;top:400px;left:80px;right:80px;text-align:center;font-size:150px;line-height:1.25}
+#title .a{color:var(--accent)}
+#pic{position:absolute;left:50%;transform:translateX(-50%)}
+#pic.card{top:840px;width:760px;height:660px;border-radius:56px;background-size:cover;background-position:center;box-shadow:0 60px 120px -50px rgba(0,0,0,.6);border:6px solid color-mix(in srgb,var(--accent) 60%,transparent)}
+#pic.cutout{top:780px;width:1000px;height:900px;object-fit:contain;object-position:bottom center;filter:drop-shadow(0 40px 60px rgba(0,0,0,.45))}
+#logo{position:absolute;right:48px;top:150px;width:96px;height:96px;object-fit:contain}
+#name{position:absolute;left:0;right:0;text-align:center;bottom:330px;font-size:40px;opacity:.85}
+</style>
+</head>
+<body>
+<div id="root"></div>
+<script src="cover.js"></script>
+<script>
+(function(){
+const C=window.COVER;const [W,H]=C.size;const r=document.getElementById("root");
+r.style.width=W+"px";r.style.height=H+"px";r.style.direction=C.dir||"rtl";
+r.style.setProperty("--bg",C.colors.bg);r.style.setProperty("--accent",C.colors.accent);r.style.setProperty("--text",C.colors.text);
+const esc=s=>String(s||"").replace(/[&<>"]/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;"}[c]));
+let h="";
+if(C.bg)h+=`<div id="bgimg" style="background-image:url('${esc(C.bg)}')"></div>`;
+if(C.badge)h+=`<div id="badge"><span>${esc(C.badge)}</span></div>`;
+const lines=(C.title||[]).map(l=>{let x=esc(l);if(C.accentWord){const a=esc(C.accentWord);x=x.split(a).join(`<span class="a">${a}</span>`)}return x});
+h+=`<div id="title">${lines.join("<br>")}</div>`;
+if(C.img)h+=C.imgMode==="cutout"?`<img id="pic" class="cutout" src="${esc(C.img)}">`:`<div id="pic" class="card" style="background-image:url('${esc(C.img)}')"></div>`;
+if(C.brand&&C.brand.logo)h+=`<img id="logo" src="${esc(C.brand.logo)}">`;
+if(C.brand&&C.brand.name)h+=`<div id="name">${esc(C.brand.name)}</div>`;
+r.innerHTML=h;
+// shrink the title until it fits above the picture
+const t=document.getElementById("title"),bd=document.getElementById("badge");if(bd)t.style.top=(bd.offsetTop+bd.offsetHeight+40)+"px";let fs=150;while(t.offsetTop+t.offsetHeight>810&&fs>90){fs-=6;t.style.fontSize=fs+"px"}
+window.__ready=Promise.all([document.fonts.ready,...[...document.images].map(i=>i.complete?1:new Promise(x=>{i.onload=i.onerror=x}))]);
+})();
+</script>
+</body>
+</html>

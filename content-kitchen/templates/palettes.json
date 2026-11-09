@@ -1,0 +1,6 @@
+[
+  {"name": "paper", "ar": "ورق أبيض", "bg": "#FFFFFF", "accent": "#E4572E", "text": "#1B1B1B"},
+  {"name": "night", "ar": "ليلي", "bg": "#0F172A", "accent": "#38BDF8", "text": "#F8FAFC"},
+  {"name": "forest", "ar": "أخضر هادئ", "bg": "#F4F7F2", "accent": "#2F7D4F", "text": "#14201A"},
+  {"name": "sand", "ar": "رملي", "bg": "#FBF3E4", "accent": "#D97706", "text": "#292524"}
+]

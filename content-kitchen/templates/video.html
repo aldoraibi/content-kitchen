@@ -1,0 +1,92 @@
+<!doctype html>
+<html lang="ar">
+<head>
+<meta charset="utf-8">
+<title>Content Kitchen video</title>
+<style>
+@font-face{font-family:"Naskh";src:url("fonts/noto-naskh-arabic-arabic-400-normal.woff2") format("woff2");font-weight:400;unicode-range:U+0600-06FF,U+0750-077F,U+FB50-FDFF,U+FE70-FEFF,U+200C-200E}
+@font-face{font-family:"Naskh";src:url("fonts/noto-naskh-arabic-arabic-700-normal.woff2") format("woff2");font-weight:700;unicode-range:U+0600-06FF,U+0750-077F,U+FB50-FDFF,U+FE70-FEFF,U+200C-200E}
+@font-face{font-family:"Naskh";src:url("fonts/noto-naskh-arabic-latin-400-normal.woff2") format("woff2");font-weight:400;unicode-range:U+0000-00FF,U+2000-206F}
+@font-face{font-family:"Naskh";src:url("fonts/noto-naskh-arabic-latin-700-normal.woff2") format("woff2");font-weight:700;unicode-range:U+0000-00FF,U+2000-206F}
+html,body{margin:0;padding:0;background:#000}
+#root{position:relative;overflow:hidden;background:var(--bg);color:var(--text);font-family:"Naskh",serif}
+.scene{position:absolute;inset:0;opacity:0;display:flex;flex-direction:column;align-items:center;justify-content:center;text-align:center;padding:0 90px;box-sizing:border-box}
+.hook{font-size:118px;font-weight:700;line-height:1.35}
+.hook b,.point b{color:var(--accent)}
+.img{padding:0}
+.img .ph{position:absolute;inset:0;background-size:cover;background-position:center}
+.img .shade{position:absolute;inset:0;background:linear-gradient(to bottom,rgba(0,0,0,.15) 0%,rgba(0,0,0,0) 30%,rgba(0,0,0,.55) 100%)}
+.img .lbl{position:absolute;top:22%;left:80px;right:80px;color:#fff;font-size:86px;font-weight:700;line-height:1.3;text-shadow:0 6px 30px rgba(0,0,0,.45)}
+.point .t{font-size:104px;font-weight:700;line-height:1.3}
+.point .bar{width:160px;height:12px;border-radius:6px;background:var(--accent);margin:44px auto}
+.point .s{font-size:62px;line-height:1.6;opacity:.85}
+.steps{align-items:stretch}
+.steps .it{display:flex;align-items:center;gap:36px;font-size:70px;font-weight:700;margin:22px 0;padding:34px 44px;border-radius:36px;background:color-mix(in srgb,var(--text) 6%,transparent)}
+.steps .n{flex:0 0 auto;width:104px;height:104px;border-radius:52px;background:var(--accent);color:var(--bg);display:flex;align-items:center;justify-content:center;font-size:60px}
+.card{justify-content:flex-start;padding-top:24%}
+.card .box{background:color-mix(in srgb,var(--bg) 92%,var(--text));border:6px solid var(--accent);border-radius:56px;padding:90px 70px;box-shadow:0 50px 120px -50px rgba(0,0,0,.45);width:100%;box-sizing:border-box}
+.card .ct{font-size:66px;font-weight:700;color:var(--accent);margin-bottom:30px}
+.card .cx{font-size:84px;font-weight:700;line-height:1.4}
+.end .nm{font-size:110px;font-weight:700}
+.end .lg{width:300px;height:300px;object-fit:contain;margin-bottom:60px}
+#badge{position:absolute;top:120px;left:0;right:0;text-align:center;z-index:5}
+#badge span{display:inline-block;padding:14px 40px;border-radius:999px;background:var(--accent);color:var(--bg);font-size:44px;font-weight:700}
+#logo{position:absolute;z-index:6;width:96px;height:96px;object-fit:contain}
+#cap{position:absolute;left:70px;right:70px;z-index:7;text-align:center}
+#cap .pl{display:inline-block;max-width:100%;padding:22px 40px;border-radius:30px;background:color-mix(in srgb,var(--bg) 90%,transparent);font-size:66px;font-weight:700;line-height:1.5;box-shadow:0 20px 50px -30px rgba(0,0,0,.5)}
+#cap .on{color:var(--accent)}
+</style>
+</head>
+<body>
+<div id="root"></div>
+<script src="data.js"></script>
+<script>
+(function(){
+const K=window.KITCHEN;const [W,H]=K.size;const root=document.getElementById("root");
+root.style.width=W+"px";root.style.height=H+"px";root.style.direction=K.dir||"rtl";
+root.style.setProperty("--bg",K.colors.bg);root.style.setProperty("--accent",K.colors.accent);root.style.setProperty("--text",K.colors.text);
+const sc=Math.min(W,H)/1080;root.style.fontSize=(sc*100)+"%";
+const esc=s=>String(s||"").replace(/[&<>"]/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;"}[c]));
+const bold=s=>esc(s).replace(/\*([^*]+)\*/g,"<b>$1</b>");
+const ease=x=>x<=0?0:x>=1?1:1-Math.pow(1-x,3);
+const clamp=(x,a,b)=>Math.max(a,Math.min(b,x));
+const scenes=K.scenes.map(S=>{const d=document.createElement("div");d.className="scene "+({image:"img"}[S.type]||S.type);
+  if(S.type==="hook")d.innerHTML=`<div class="hook">${bold(S.text)}</div>`;
+  else if(S.type==="image")d.innerHTML=`<div class="ph" style="background-image:url('${esc(S.img)}')"></div><div class="shade"></div>${S.text?`<div class="lbl">${bold(S.text)}</div>`:""}`;
+  else if(S.type==="point")d.innerHTML=`<div class="t">${bold(S.text)}</div><div class="bar"></div>${S.sub?`<div class="s">${bold(S.sub)}</div>`:""}`;
+  else if(S.type==="steps")d.innerHTML=(S.items||[]).map((x,i)=>`<div class="it"><span class="n">${(K.dir==="ltr"?i+1:(i+1).toLocaleString("ar-EG"))}</span><span>${bold(x)}</span></div>`).join("");
+  else if(S.type==="card")d.innerHTML=`<div class="box">${S.title?`<div class="ct">${esc(S.title)}</div>`:""}<div class="cx">${bold(S.text)}</div></div>`;
+  else if(S.type==="end")d.innerHTML=`${K.brand&&K.brand.logo?`<img class="lg" src="${esc(K.brand.logo)}">`:""}<div class="nm">${esc((K.brand&&K.brand.name)||"")}</div>`;
+  if(S.type==="image")d.style.zIndex=1;else d.style.zIndex=2;
+  root.appendChild(d);return {S,d};});
+if(K.badge){const b=document.createElement("div");b.id="badge";b.innerHTML=`<span>${esc(K.badge)}</span>`;root.appendChild(b)}
+if(K.brand&&K.brand.logo){const l=document.createElement("img");l.id="logo";l.src=K.brand.logo;l.style.right=(48*sc)+"px";l.style.top=(H>W?150:40)*sc+"px";root.appendChild(l)}
+// caption chunks
+const words=K.words||[];const chunks=[];let cur=[];
+words.forEach((w,i)=>{const gap=i?w.s-words[i-1].e:0;if(cur.length&&(cur.length>=5||gap>0.6)){chunks.push(cur);cur=[]}cur.push(i)});if(cur.length)chunks.push(cur);
+const cap=document.createElement("div");cap.id="cap";cap.style.bottom=(H>W?470:120)*sc+"px";root.appendChild(cap);
+let lastChunk=-1;
+window.__meta={dur:K.dur,size:K.size};
+window.__seek=function(t){
+  scenes.forEach(({S,d},k)=>{const last=k===scenes.length-1;const fi=ease((t-S.s)/0.45),fo=last?1:ease((S.e+0.45-t)/0.45);const o=clamp(Math.min(fi,fo),0,1);d.style.opacity=o;d.style.visibility=o>0?"visible":"hidden";
+    const p=clamp((t-S.s)/Math.max(0.1,S.e-S.s),0,1);
+    if(S.type==="hook"){d.firstChild.style.transform=`translateY(${(1-fi)*60}px) scale(${0.94+0.06*fi})`}
+    else if(S.type==="image"){const ph=d.querySelector(".ph");const f=S.focus||[0.5,0.5];ph.style.transformOrigin=`${f[0]*100}% ${f[1]*100}%`;ph.style.transform=`scale(${1.04+0.12*p})`;const lb=d.querySelector(".lbl");if(lb){const a=ease((t-S.s-0.3)/0.5);lb.style.opacity=a;lb.style.transform=`translateY(${(1-a)*40}px)`}}
+    else if(S.type==="point"){const t1=d.querySelector(".t"),b=d.querySelector(".bar"),s2=d.querySelector(".s");const a=ease((t-S.s)/0.5),c=ease((t-S.s-0.5)/0.5),e2=ease((t-S.s-0.9)/0.5);t1.style.transform=`translateY(${(1-a)*50}px)`;b.style.transform=`scaleX(${c})`;if(s2){s2.style.opacity=e2*0.85;s2.style.transform=`translateY(${(1-e2)*30}px)`}}
+    else if(S.type==="steps"){const its=d.querySelectorAll(".it");const n=its.length||1;const span=Math.max(0.4,(S.e-S.s-0.6)/n);its.forEach((it,i)=>{const a=ease((t-S.s-0.2-i*span)/0.45);it.style.opacity=a;it.style.transform=`translateX(${(K.dir==="ltr"?-1:1)*(1-a)*80}px)`})}
+    else if(S.type==="card"){const bx=d.querySelector(".box");bx.style.transform=`translateY(${(1-fi)*90}px) scale(${0.96+0.04*fi})`}
+    else if(S.type==="end"){[...d.children].forEach((c,i)=>{const a=ease((t-S.s-i*0.35)/0.6);c.style.opacity=a;c.style.transform=`translateY(${(1-a)*40}px)`})}
+  });
+  // caption
+  let wi=-1;for(let i=0;i<words.length;i++){if(words[i].s<=t+0.02)wi=i;else break}
+  const endScene=scenes.find(x=>x.S.type==="end"&&t>=x.S.s);
+  let ci=-1;if(wi>=0&&!endScene){ci=chunks.findIndex(c=>c.includes(wi));if(ci>=0&&t>words[chunks[ci][chunks[ci].length-1]].e+0.8)ci=-1}
+  if(ci!==lastChunk){cap.innerHTML=ci<0?"":`<span class="pl">${chunks[ci].map(i=>`<span data-i="${i}">${esc(words[i].w)}</span>`).join(" ")}</span>`;lastChunk=ci}
+  cap.querySelectorAll("[data-i]").forEach(s=>s.className=(+s.dataset.i===wi&&t<=words[wi].e+0.15)?"on":"");
+};
+window.__ready=Promise.all([document.fonts.ready,...[...document.images,...scenes.filter(x=>x.S.img).map(x=>{const i=new Image();i.src=x.S.img;return i})].map(i=>i.complete?1:new Promise(r=>{i.onload=i.onerror=r}))]);
+window.__seek(0);
+})();
+</script>
+</body>
+</html>
